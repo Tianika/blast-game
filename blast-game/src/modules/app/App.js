@@ -9,8 +9,7 @@ class App {
   async start() {
     const game = new Game({ N: this.N, M: this.M });
 
-    await game.start();
-    game.draw();
+    await game.startGame();
   }
 }
 

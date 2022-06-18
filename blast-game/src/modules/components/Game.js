@@ -5,12 +5,13 @@ import {
   GAME_BG,
 } from '../../utils/constants';
 import {
-  getRandomNum,
   loadImage,
   getTileArray,
   getCursorPosition,
   checkCoords,
 } from '../../utils/helpers';
+import DisplayObject from './DisplayObject';
+import Tiles from './Tiles';
 
 class Game {
   constructor({ N, M }) {
@@ -29,11 +30,11 @@ class Game {
 
     this.bg = null;
 
-    this.tiles = [];
-    this.tilesCount = 0;
-    this.tilesArr = [];
+    this.tilesSample = [];
+    this.tiles = null;
 
     this.isLoading = false;
+    this.animationDuration = 300;
 
     requestAnimationFrame((time) => this.render(time));
   }
@@ -42,32 +43,12 @@ class Game {
     this.canvas.width = this.canvas.width;
   }
 
-  async start() {
+  async startGame() {
     const root = document.querySelector('#root');
     root.appendChild(this.canvas);
 
     this.bg = await loadImage(GAME_BG);
-
-    this.tiles = await getTileArray();
-    this.tilesCount = this.tiles.length - 1;
-
-    for (let i = this.N - 1; i >= 0; i--) {
-      const arr = [];
-
-      for (let j = this.M - 1; j >= 0; j--) {
-        const { name, image } = this.tiles[getRandomNum(0, this.tilesCount)];
-
-        arr.push({
-          name,
-          image,
-          x: i * this.tileSize + this.border,
-          y: j * this.tileSize + this.border,
-          width: this.tileSize,
-          height: this.tileSize + this.tileShift,
-        });
-      }
-      this.tilesArr.push(arr);
-    }
+    this.tilesSample = await getTileArray();
 
     this.canvas.addEventListener('click', (event) => {
       const { x, y } = getCursorPosition(this.canvas, event);
@@ -88,29 +69,34 @@ class Game {
       }
     });
 
+    this.tiles = new Tiles({
+      N: this.N,
+      M: this.M,
+      tilesSample: this.tilesSample,
+      tileSize: this.tileSize,
+      border: this.border,
+      tileShift: this.tileShift,
+      context: this.context,
+    });
+    this.tiles.create();
+
     this.isLoading = true;
+    this.draw();
   }
 
   draw() {
     console.log('draw');
 
-    this.context.drawImage(
-      this.bg,
-      0,
-      0,
-      this.canvas.width,
-      this.canvas.height
-    );
+    const background = new DisplayObject({
+      image: this.bg,
+      x: 0,
+      y: 0,
+      width: this.canvas.width,
+      height: this.canvas.height,
+    });
+    background.draw(this.context);
 
-    for (let i = 0; i < this.N; i++) {
-      for (let j = 0; j < this.M; j++) {
-        if (this.tilesArr[i][j]) {
-          const { image, x, y, width, height } = this.tilesArr[i][j];
-
-          this.context.drawImage(image, x, y, width, height);
-        }
-      }
-    }
+    this.tiles.draw();
   }
 
   delete(x, y) {
@@ -187,12 +173,9 @@ class Game {
 
   render(timestamp) {
     requestAnimationFrame((time) => this.render(time));
-
     this.clearCanvas();
-    if (this.isLoading) {
-      const x = getRandomNum(0, 9);
-      const y = getRandomNum(0, 9);
 
+    if (this.isLoading) {
       this.draw();
     }
   }
