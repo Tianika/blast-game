@@ -16,14 +16,14 @@ export const loadImage = async (src) => {
 export const getTailArray = async () => {
   const tails = [];
 
-  const arrPromise = TAIL_DATAS.map(async (data) => {
-    const image = await loadImage(data.src);
+  const arrPromise = TAIL_DATAS.map(async ({ name, src }) => {
+    const image = await loadImage(src);
 
-    return image;
+    return { name, image };
   });
 
-  for await (const promise of arrPromise) {
-    tails.push(promise);
+  for await (const { name, image } of arrPromise) {
+    tails.push({ name, image });
   }
 
   return tails;
@@ -34,4 +34,16 @@ export function getCursorPosition(canvas, event) {
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
   return { x, y };
+}
+
+export function checkCoords(arr, newX, newY) {
+  let result = false;
+
+  arr.forEach(({ x, y }) => {
+    if (newX === x && newY === y) {
+      result = true;
+    }
+  });
+
+  return result;
 }

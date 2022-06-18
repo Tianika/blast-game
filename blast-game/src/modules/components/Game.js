@@ -9,6 +9,7 @@ import {
   loadImage,
   getTailArray,
   getCursorPosition,
+  checkCoords,
 } from '../../utils/helpers';
 
 class Game {
@@ -54,10 +55,11 @@ class Game {
       const arr = [];
 
       for (let j = this.M - 1; j >= 0; j--) {
-        const tail = this.tails[getRandomNum(0, this.tailsCount)];
+        const { name, image } = this.tails[getRandomNum(0, this.tailsCount)];
 
         arr.push({
-          tail,
+          name,
+          image,
           x: i * this.tailSize + this.border,
           y: j * this.tailSize + this.border,
           width: this.tailSize,
@@ -102,17 +104,85 @@ class Game {
 
     for (let i = 0; i < this.N; i++) {
       for (let j = 0; j < this.M; j++) {
-        const { tail, x, y, width, height } = this.tailsArr[i][j];
+        if (this.tailsArr[i][j]) {
+          const { image, x, y, width, height } = this.tailsArr[i][j];
 
-        if (tail) {
-          this.context.drawImage(tail, x, y, width, height);
+          this.context.drawImage(image, x, y, width, height);
         }
       }
     }
   }
 
   delete(x, y) {
-    this.tailsArr[x][y].tail = null;
+    const coordsArr = [];
+    coordsArr.push({ x, y, isChecked: false });
+
+    if (!this.tailsArr[x][y]) return;
+
+    const { name } = this.tailsArr[x][y];
+    let isAllFind = true;
+
+    do {
+      isAllFind = false;
+
+      coordsArr.forEach(({ x, y, isChecked }, index) => {
+        if (isChecked) return;
+
+        if (x + 1 >= 0 && x + 1 < this.N) {
+          if (
+            this.tailsArr[x + 1][y] &&
+            this.tailsArr[x + 1][y].name === name &&
+            !checkCoords(coordsArr, x + 1, y)
+          ) {
+            coordsArr.push({ x: x + 1, y, isChecked: false });
+            isAllFind = true;
+          }
+        }
+
+        if (x - 1 >= 0 && x - 1 < this.N) {
+          if (
+            this.tailsArr[x - 1][y] &&
+            this.tailsArr[x - 1][y].name === name &&
+            !checkCoords(coordsArr, x - 1, y)
+          ) {
+            coordsArr.push({ x: x - 1, y, isChecked: false });
+            isAllFind = true;
+          }
+        }
+
+        if (y + 1 >= 0 && y + 1 < this.M) {
+          if (
+            this.tailsArr[x][y + 1] &&
+            this.tailsArr[x][y + 1].name === name
+          ) {
+            if (!checkCoords(coordsArr, x, y + 1)) {
+              coordsArr.push({ x, y: y + 1, isChecked: false });
+              isAllFind = true;
+            }
+          }
+        }
+
+        if (y - 1 >= 0 && y - 1 < this.M) {
+          if (
+            this.tailsArr[x][y - 1] &&
+            this.tailsArr[x][y - 1].name === name
+          ) {
+            if (!checkCoords(coordsArr, x, y - 1)) {
+              coordsArr.push({ x, y: y - 1, isChecked: false });
+              isAllFind = true;
+            }
+          }
+        }
+
+        coordsArr[index].isChecked = true;
+      });
+    } while (isAllFind);
+
+    if (coordsArr.length > 1) {
+      coordsArr.forEach(({ x, y }) => {
+        this.tailsArr[x][y] = null;
+      });
+    }
   }
 
   render(timestamp) {
