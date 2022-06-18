@@ -18,12 +18,13 @@ class Game {
     this.tailSize = TAIL_SIZE;
     this.tailShift = TAIL_SHIFT;
     this.border = BG_BORDER;
+
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
 
     this.canvas.width = this.N * this.tailSize + this.border * 2;
     this.canvas.height =
-      this.M * this.tailSize + this.border * 2 + this.tailShift * 1.5;
+      this.M * this.tailSize + this.border * 2 + this.tailShift;
 
     this.bg = null;
 
@@ -72,10 +73,16 @@ class Game {
       if (
         x > this.border &&
         x < this.canvas.width - this.border &&
-        y > this.border &&
-        y < this.canvas.width - this.border
+        y > this.border + this.tailShift &&
+        y < this.canvas.width - this.border + this.tailShift
       ) {
-        console.log(x, y);
+        const xPos = this.M - Math.floor((x - this.border) / this.tailSize) - 1;
+        const yPos =
+          this.N -
+          Math.floor((y - this.border - this.tailShift) / this.tailSize) -
+          1;
+
+        this.delete(xPos, yPos);
       }
     });
 
@@ -97,9 +104,15 @@ class Game {
       for (let j = 0; j < this.M; j++) {
         const { tail, x, y, width, height } = this.tailsArr[i][j];
 
-        this.context.drawImage(tail, x, y, width, height);
+        if (tail) {
+          this.context.drawImage(tail, x, y, width, height);
+        }
       }
     }
+  }
+
+  delete(x, y) {
+    this.tailsArr[x][y].tail = null;
   }
 
   render(timestamp) {
@@ -107,6 +120,9 @@ class Game {
 
     this.clearCanvas();
     if (this.isLoading) {
+      const x = getRandomNum(0, 9);
+      const y = getRandomNum(0, 9);
+
       this.draw();
     }
   }
