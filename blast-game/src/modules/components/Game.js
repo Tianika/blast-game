@@ -1,13 +1,13 @@
 import {
-  TAIL_SIZE,
-  TAIL_SHIFT,
+  TILE_SIZE,
+  TILE_SHIFT,
   BG_BORDER,
   GAME_BG,
 } from '../../utils/constants';
 import {
   getRandomNum,
   loadImage,
-  getTailArray,
+  getTileArray,
   getCursorPosition,
   checkCoords,
 } from '../../utils/helpers';
@@ -16,22 +16,22 @@ class Game {
   constructor({ N, M }) {
     this.N = N;
     this.M = M;
-    this.tailSize = TAIL_SIZE;
-    this.tailShift = TAIL_SHIFT;
+    this.tileSize = TILE_SIZE;
+    this.tileShift = TILE_SHIFT;
     this.border = BG_BORDER;
 
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
 
-    this.canvas.width = this.N * this.tailSize + this.border * 2;
+    this.canvas.width = this.N * this.tileSize + this.border * 2;
     this.canvas.height =
-      this.M * this.tailSize + this.border * 2 + this.tailShift;
+      this.M * this.tileSize + this.border * 2 + this.tileShift;
 
     this.bg = null;
 
-    this.tails = [];
-    this.tailsCount = 0;
-    this.tailsArr = [];
+    this.tiles = [];
+    this.tilesCount = 0;
+    this.tilesArr = [];
 
     this.isLoading = false;
 
@@ -48,25 +48,25 @@ class Game {
 
     this.bg = await loadImage(GAME_BG);
 
-    this.tails = await getTailArray();
-    this.tailsCount = this.tails.length - 1;
+    this.tiles = await getTileArray();
+    this.tilesCount = this.tiles.length - 1;
 
     for (let i = this.N - 1; i >= 0; i--) {
       const arr = [];
 
       for (let j = this.M - 1; j >= 0; j--) {
-        const { name, image } = this.tails[getRandomNum(0, this.tailsCount)];
+        const { name, image } = this.tiles[getRandomNum(0, this.tilesCount)];
 
         arr.push({
           name,
           image,
-          x: i * this.tailSize + this.border,
-          y: j * this.tailSize + this.border,
-          width: this.tailSize,
-          height: this.tailSize + this.tailShift,
+          x: i * this.tileSize + this.border,
+          y: j * this.tileSize + this.border,
+          width: this.tileSize,
+          height: this.tileSize + this.tileShift,
         });
       }
-      this.tailsArr.push(arr);
+      this.tilesArr.push(arr);
     }
 
     this.canvas.addEventListener('click', (event) => {
@@ -75,13 +75,13 @@ class Game {
       if (
         x > this.border &&
         x < this.canvas.width - this.border &&
-        y > this.border + this.tailShift &&
-        y < this.canvas.width - this.border + this.tailShift
+        y > this.border + this.tileShift &&
+        y < this.canvas.width - this.border + this.tileShift
       ) {
-        const xPos = this.M - Math.floor((x - this.border) / this.tailSize) - 1;
+        const xPos = this.M - Math.floor((x - this.border) / this.tileSize) - 1;
         const yPos =
           this.N -
-          Math.floor((y - this.border - this.tailShift) / this.tailSize) -
+          Math.floor((y - this.border - this.tileShift) / this.tileSize) -
           1;
 
         this.delete(xPos, yPos);
@@ -104,8 +104,8 @@ class Game {
 
     for (let i = 0; i < this.N; i++) {
       for (let j = 0; j < this.M; j++) {
-        if (this.tailsArr[i][j]) {
-          const { image, x, y, width, height } = this.tailsArr[i][j];
+        if (this.tilesArr[i][j]) {
+          const { image, x, y, width, height } = this.tilesArr[i][j];
 
           this.context.drawImage(image, x, y, width, height);
         }
@@ -117,9 +117,9 @@ class Game {
     const coordsArr = [];
     coordsArr.push({ x, y, isChecked: false });
 
-    if (!this.tailsArr[x][y]) return;
+    if (!this.tilesArr[x][y]) return;
 
-    const { name } = this.tailsArr[x][y];
+    const { name } = this.tilesArr[x][y];
     let isAllFind = true;
 
     do {
@@ -130,8 +130,8 @@ class Game {
 
         if (x + 1 >= 0 && x + 1 < this.N) {
           if (
-            this.tailsArr[x + 1][y] &&
-            this.tailsArr[x + 1][y].name === name &&
+            this.tilesArr[x + 1][y] &&
+            this.tilesArr[x + 1][y].name === name &&
             !checkCoords(coordsArr, x + 1, y)
           ) {
             coordsArr.push({ x: x + 1, y, isChecked: false });
@@ -141,8 +141,8 @@ class Game {
 
         if (x - 1 >= 0 && x - 1 < this.N) {
           if (
-            this.tailsArr[x - 1][y] &&
-            this.tailsArr[x - 1][y].name === name &&
+            this.tilesArr[x - 1][y] &&
+            this.tilesArr[x - 1][y].name === name &&
             !checkCoords(coordsArr, x - 1, y)
           ) {
             coordsArr.push({ x: x - 1, y, isChecked: false });
@@ -152,8 +152,8 @@ class Game {
 
         if (y + 1 >= 0 && y + 1 < this.M) {
           if (
-            this.tailsArr[x][y + 1] &&
-            this.tailsArr[x][y + 1].name === name
+            this.tilesArr[x][y + 1] &&
+            this.tilesArr[x][y + 1].name === name
           ) {
             if (!checkCoords(coordsArr, x, y + 1)) {
               coordsArr.push({ x, y: y + 1, isChecked: false });
@@ -164,8 +164,8 @@ class Game {
 
         if (y - 1 >= 0 && y - 1 < this.M) {
           if (
-            this.tailsArr[x][y - 1] &&
-            this.tailsArr[x][y - 1].name === name
+            this.tilesArr[x][y - 1] &&
+            this.tilesArr[x][y - 1].name === name
           ) {
             if (!checkCoords(coordsArr, x, y - 1)) {
               coordsArr.push({ x, y: y - 1, isChecked: false });
@@ -180,7 +180,7 @@ class Game {
 
     if (coordsArr.length > 1) {
       coordsArr.forEach(({ x, y }) => {
-        this.tailsArr[x][y] = null;
+        this.tilesArr[x][y] = null;
       });
     }
   }

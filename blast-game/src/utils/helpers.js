@@ -1,4 +1,4 @@
-import { TAIL_DATAS } from './constants';
+import { TILE_DATAS } from './constants';
 
 export const getRandomNum = (min, max) => {
   return Math.round(Math.random() * (max - min) + min);
@@ -13,20 +13,20 @@ export const loadImage = async (src) => {
   return image;
 };
 
-export const getTailArray = async () => {
-  const tails = [];
+export const getTileArray = async () => {
+  const tiles = [];
 
-  const arrPromise = TAIL_DATAS.map(async ({ name, src }) => {
+  const arrPromise = TILE_DATAS.map(async ({ name, src }) => {
     const image = await loadImage(src);
 
     return { name, image };
   });
 
   for await (const { name, image } of arrPromise) {
-    tails.push({ name, image });
+    tiles.push({ name, image });
   }
 
-  return tails;
+  return tiles;
 };
 
 export function getCursorPosition(canvas, event) {

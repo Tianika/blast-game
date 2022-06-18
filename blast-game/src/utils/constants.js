@@ -1,12 +1,12 @@
-export const TAIL_SIZE = 50;
+export const TILE_SIZE = 50;
 
-export const TAIL_SHIFT = 5;
+export const TILE_SHIFT = 5;
 
 export const BG_BORDER = 15;
 
 export const GAME_BG = '../assets/png/field.png';
 
-export const TAIL_DATAS = [
+export const TILE_DATAS = [
   {
     name: 'yellow',
     src: '../assets/png/blocks/yellow.png',
