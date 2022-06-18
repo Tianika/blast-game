@@ -24,29 +24,36 @@ class Game {
     this.canvas.width = this.N * this.tailSize + this.border * 2;
     this.canvas.height =
       this.M * this.tailSize + this.border * 2 + this.tailShift * 1.5;
+
+    this.bg = null;
+
+    this.tails = [];
+    this.tailsCount = 0;
+    this.tailsArr = [];
+
+    this.isLoading = false;
+
+    requestAnimationFrame((time) => this.render(time));
   }
 
   clearCanvas() {
     this.canvas.width = this.canvas.width;
   }
 
-  async draw() {
+  async start() {
     const root = document.querySelector('#root');
     root.appendChild(this.canvas);
 
-    const bg = await loadImage(GAME_BG);
-    this.context.drawImage(bg, 0, 0, this.canvas.width, this.canvas.height);
+    this.bg = await loadImage(GAME_BG);
 
-    const tailsArr = [];
+    this.tails = await getTailArray();
+    this.tailsCount = this.tails.length - 1;
 
-    const tails = await getTailArray();
-    const tailsCount = tails.length - 1;
-
-    for (let i = this.N - 1; i > -1; i--) {
+    for (let i = this.N - 1; i >= 0; i--) {
       const arr = [];
 
-      for (let j = this.M - 1; j > -1; j--) {
-        const tail = tails[getRandomNum(0, tailsCount)];
+      for (let j = this.M - 1; j >= 0; j--) {
+        const tail = this.tails[getRandomNum(0, this.tailsCount)];
 
         arr.push({
           tail,
@@ -56,15 +63,7 @@ class Game {
           height: this.tailSize + this.tailShift,
         });
       }
-      tailsArr.push(arr);
-    }
-
-    for (let i = 0; i < this.N; i++) {
-      for (let j = 0; j < this.M; j++) {
-        const { tail, x, y, width, height } = tailsArr[i][j];
-
-        this.context.drawImage(tail, x, y, width, height);
-      }
+      this.tailsArr.push(arr);
     }
 
     this.canvas.addEventListener('click', (event) => {
@@ -79,6 +78,37 @@ class Game {
         console.log(x, y);
       }
     });
+
+    this.isLoading = true;
+  }
+
+  draw() {
+    console.log('draw');
+
+    this.context.drawImage(
+      this.bg,
+      0,
+      0,
+      this.canvas.width,
+      this.canvas.height
+    );
+
+    for (let i = 0; i < this.N; i++) {
+      for (let j = 0; j < this.M; j++) {
+        const { tail, x, y, width, height } = this.tailsArr[i][j];
+
+        this.context.drawImage(tail, x, y, width, height);
+      }
+    }
+  }
+
+  render(timestamp) {
+    requestAnimationFrame((time) => this.render(time));
+
+    this.clearCanvas();
+    if (this.isLoading) {
+      this.draw();
+    }
   }
 }
 
