@@ -10,7 +10,7 @@ import {
   getCursorPosition,
   checkCoords,
 } from '../../utils/helpers';
-import DisplayObject from './DisplayObject';
+import Background from './Background';
 import Tiles from './Tiles';
 
 class Game {
@@ -28,15 +28,13 @@ class Game {
     this.canvas.height =
       this.M * this.tileSize + this.border * 2 + this.tileShift;
 
-    this.bg = null;
+    this.bgImage = null;
+    this.background = null;
 
     this.tilesSample = [];
     this.tiles = null;
 
-    this.isLoading = false;
     this.animationDuration = 300;
-
-    requestAnimationFrame((time) => this.render(time));
   }
 
   clearCanvas() {
@@ -47,8 +45,28 @@ class Game {
     const root = document.querySelector('#root');
     root.appendChild(this.canvas);
 
-    this.bg = await loadImage(GAME_BG);
+    this.bgImage = await loadImage(GAME_BG);
     this.tilesSample = await getTileArray();
+
+    this.background = new Background({
+      image: this.bgImage,
+      x: 0,
+      y: 0,
+      width: this.canvas.width,
+      height: this.canvas.height,
+      context: this.context,
+    });
+
+    this.tiles = new Tiles({
+      N: this.N,
+      M: this.M,
+      tilesSample: this.tilesSample,
+      tileSize: this.tileSize,
+      border: this.border,
+      tileShift: this.tileShift,
+      context: this.context,
+    });
+    this.tiles.create();
 
     this.canvas.addEventListener('click', (event) => {
       const { x, y } = getCursorPosition(this.canvas, event);
@@ -69,33 +87,13 @@ class Game {
       }
     });
 
-    this.tiles = new Tiles({
-      N: this.N,
-      M: this.M,
-      tilesSample: this.tilesSample,
-      tileSize: this.tileSize,
-      border: this.border,
-      tileShift: this.tileShift,
-      context: this.context,
-    });
-    this.tiles.create();
-
-    this.isLoading = true;
-    this.draw();
+    requestAnimationFrame((time) => this.render(time));
   }
 
   draw() {
     console.log('draw');
 
-    const background = new DisplayObject({
-      image: this.bg,
-      x: 0,
-      y: 0,
-      width: this.canvas.width,
-      height: this.canvas.height,
-    });
-    background.draw(this.context);
-
+    this.background.draw();
     this.tiles.draw();
   }
 
@@ -174,10 +172,7 @@ class Game {
   render(timestamp) {
     requestAnimationFrame((time) => this.render(time));
     this.clearCanvas();
-
-    if (this.isLoading) {
-      this.draw();
-    }
+    this.draw();
   }
 }
 
