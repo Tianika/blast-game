@@ -7,7 +7,9 @@ class Background extends DisplayObject {
     this.context = props.context;
   }
 
-  draw() {}
+  draw() {
+    super.draw(this.context);
+  }
 }
 
 export default Background;

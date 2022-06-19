@@ -83,7 +83,7 @@ class Game {
           Math.floor((y - this.border - this.tileShift) / this.tileSize) -
           1;
 
-        this.delete(xPos, yPos);
+        this.tiles.delete(xPos, yPos);
       }
     });
 
@@ -95,78 +95,6 @@ class Game {
 
     this.background.draw();
     this.tiles.draw();
-  }
-
-  delete(x, y) {
-    const coordsArr = [];
-    coordsArr.push({ x, y, isChecked: false });
-
-    if (!this.tilesArr[x][y]) return;
-
-    const { name } = this.tilesArr[x][y];
-    let isAllFind = true;
-
-    do {
-      isAllFind = false;
-
-      coordsArr.forEach(({ x, y, isChecked }, index) => {
-        if (isChecked) return;
-
-        if (x + 1 >= 0 && x + 1 < this.N) {
-          if (
-            this.tilesArr[x + 1][y] &&
-            this.tilesArr[x + 1][y].name === name &&
-            !checkCoords(coordsArr, x + 1, y)
-          ) {
-            coordsArr.push({ x: x + 1, y, isChecked: false });
-            isAllFind = true;
-          }
-        }
-
-        if (x - 1 >= 0 && x - 1 < this.N) {
-          if (
-            this.tilesArr[x - 1][y] &&
-            this.tilesArr[x - 1][y].name === name &&
-            !checkCoords(coordsArr, x - 1, y)
-          ) {
-            coordsArr.push({ x: x - 1, y, isChecked: false });
-            isAllFind = true;
-          }
-        }
-
-        if (y + 1 >= 0 && y + 1 < this.M) {
-          if (
-            this.tilesArr[x][y + 1] &&
-            this.tilesArr[x][y + 1].name === name
-          ) {
-            if (!checkCoords(coordsArr, x, y + 1)) {
-              coordsArr.push({ x, y: y + 1, isChecked: false });
-              isAllFind = true;
-            }
-          }
-        }
-
-        if (y - 1 >= 0 && y - 1 < this.M) {
-          if (
-            this.tilesArr[x][y - 1] &&
-            this.tilesArr[x][y - 1].name === name
-          ) {
-            if (!checkCoords(coordsArr, x, y - 1)) {
-              coordsArr.push({ x, y: y - 1, isChecked: false });
-              isAllFind = true;
-            }
-          }
-        }
-
-        coordsArr[index].isChecked = true;
-      });
-    } while (isAllFind);
-
-    if (coordsArr.length > 1) {
-      coordsArr.forEach(({ x, y }) => {
-        this.tilesArr[x][y] = null;
-      });
-    }
   }
 
   render(timestamp) {

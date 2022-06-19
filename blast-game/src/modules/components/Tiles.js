@@ -1,5 +1,5 @@
 import DisplayObject from './DisplayObject';
-import { getTileArrForDraw } from '../../utils/helpers';
+import { checkCoords, getTileArrForDraw } from '../../utils/helpers';
 
 class Tiles extends DisplayObject {
   constructor(props = {}) {
@@ -39,7 +39,71 @@ class Tiles extends DisplayObject {
     }
   }
 
-  delete() {}
+  delete(x, y) {
+    const coordsArr = [];
+    coordsArr.push({ x, y, isChecked: false });
+
+    if (!this.tiles[x][y]) return;
+
+    const { name } = this.tiles[x][y];
+    let isAllFind = true;
+
+    do {
+      isAllFind = false;
+
+      coordsArr.forEach(({ x, y, isChecked }, index) => {
+        if (isChecked) return;
+
+        if (x + 1 >= 0 && x + 1 < this.N) {
+          if (
+            this.tiles[x + 1][y] &&
+            this.tiles[x + 1][y].name === name &&
+            !checkCoords(coordsArr, x + 1, y)
+          ) {
+            coordsArr.push({ x: x + 1, y, isChecked: false });
+            isAllFind = true;
+          }
+        }
+
+        if (x - 1 >= 0 && x - 1 < this.N) {
+          if (
+            this.tiles[x - 1][y] &&
+            this.tiles[x - 1][y].name === name &&
+            !checkCoords(coordsArr, x - 1, y)
+          ) {
+            coordsArr.push({ x: x - 1, y, isChecked: false });
+            isAllFind = true;
+          }
+        }
+
+        if (y + 1 >= 0 && y + 1 < this.M) {
+          if (this.tiles[x][y + 1] && this.tiles[x][y + 1].name === name) {
+            if (!checkCoords(coordsArr, x, y + 1)) {
+              coordsArr.push({ x, y: y + 1, isChecked: false });
+              isAllFind = true;
+            }
+          }
+        }
+
+        if (y - 1 >= 0 && y - 1 < this.M) {
+          if (this.tiles[x][y - 1] && this.tiles[x][y - 1].name === name) {
+            if (!checkCoords(coordsArr, x, y - 1)) {
+              coordsArr.push({ x, y: y - 1, isChecked: false });
+              isAllFind = true;
+            }
+          }
+        }
+
+        coordsArr[index].isChecked = true;
+      });
+    } while (isAllFind);
+
+    if (coordsArr.length > 1) {
+      coordsArr.forEach(({ x, y }) => {
+        this.tiles[x][y] = null;
+      });
+    }
+  }
 }
 
 export default Tiles;
