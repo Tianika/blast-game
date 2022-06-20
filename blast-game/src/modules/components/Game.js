@@ -106,8 +106,7 @@ class Game {
 
     this.background.draw();
     this.tiles.draw();
-    // this.tiles.animateDelete();
-    // this.tiles.animateMove();
+    this.tiles.animateMove();
   }
 
   render(timestamp) {
