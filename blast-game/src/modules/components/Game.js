@@ -89,7 +89,10 @@ class Game {
             this.tiles.forAnimate = [...tiles.findedTiles];
 
             this.tiles.animationTimeEnd =
-              Date.now() + this.tiles.animationDuration;
+              Date.now() + this.tiles.deleteAnimationDuration;
+
+            this.tiles.delete();
+            this.tiles.animateDelete();
           }
         }
       }
@@ -103,8 +106,8 @@ class Game {
 
     this.background.draw();
     this.tiles.draw();
-    this.tiles.delete();
-    this.tiles.animate();
+    // this.tiles.animateDelete();
+    // this.tiles.animateMove();
   }
 
   render(timestamp) {

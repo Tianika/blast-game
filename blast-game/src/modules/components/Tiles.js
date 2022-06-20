@@ -1,5 +1,5 @@
 import DisplayObject from './DisplayObject';
-import { checkCoords, getTileArrForDraw } from '../../utils/helpers';
+import { checkCoords, getRandomNum } from '../../utils/helpers';
 import { MIN_TILES_GROUP } from '../../utils/constants';
 
 class Tiles extends DisplayObject {
@@ -17,21 +17,38 @@ class Tiles extends DisplayObject {
     this.tiles = [];
     this.forAnimate = [];
     this.forDelete = [];
+    this.forMove = [];
 
     this.isAnimation = false;
-    this.animationDuration = 300;
+    this.deleteAnimationDuration = 300;
+    this.moveAnimationDuration = 100;
     this.animationTimeEnd = 0;
   }
 
   create() {
-    this.tiles = getTileArrForDraw(
-      this.N,
-      this.M,
-      this.tilesSample,
-      this.tileSize,
-      this.border,
-      this.tileShift
-    );
+    for (let i = this.N - 1; i >= 0; i--) {
+      const arr = [];
+
+      for (let j = this.M - 1; j >= 0; j--) {
+        arr.push(this.createTile(i, j));
+      }
+
+      this.tiles.push(arr);
+    }
+  }
+
+  createTile(column, row) {
+    const { name, image } =
+      this.tilesSample[getRandomNum(0, this.tilesSample.length - 1)];
+
+    return {
+      name,
+      image,
+      x: column * this.tileSize + this.border,
+      y: row * this.tileSize + this.border,
+      width: this.tileSize,
+      height: this.tileSize + this.tileShift,
+    };
   }
 
   draw() {
@@ -115,21 +132,22 @@ class Tiles extends DisplayObject {
       : { findedTiles: [], coords: [] };
   }
 
-  animate() {
-    if (this.forAnimate.length) {
-      this.isAnimation = true;
-    }
-
+  animateDelete(timestamp) {
     if (Date.now() > this.animationTimeEnd) {
       this.forAnimate = [];
       this.isAnimation = false;
+      this.move();
     }
 
     this.forAnimate = this.forAnimate.map(({ image, x, y, width, height }) => {
       new DisplayObject({ image, x, y, width, height }).draw(this.context);
 
-      const widthResize = Math.ceil((width / this.animationDuration) * 15);
-      const heightResize = Math.ceil((height / this.animationDuration) * 15);
+      const widthResize = Math.ceil(
+        (width / this.deleteAnimationDuration) * 15
+      );
+      const heightResize = Math.ceil(
+        (height / this.deleteAnimationDuration) * 15
+      );
 
       return {
         image,
@@ -139,6 +157,12 @@ class Tiles extends DisplayObject {
         y: (y += heightResize / 2),
       };
     });
+
+    if (this.forAnimate.length) {
+      this.isAnimation = true;
+
+      requestAnimationFrame((time) => this.animateDelete(time));
+    }
   }
 
   delete() {
@@ -148,6 +172,64 @@ class Tiles extends DisplayObject {
 
     this.deleteTiles = [];
   }
+
+  move() {
+    for (let i = 0; i < this.N; i++) {
+      let timeAnim = 0;
+      let index = this.N - 1;
+      const arr = [];
+
+      for (let j = 0; j < this.M; j++) {
+        const tile = this.tiles[i][j];
+
+        if (tile) {
+          const { name, image, x, y, width, height } = tile;
+
+          arr.push({
+            tile: {
+              name,
+              image,
+              x,
+              y: this.border + index * this.tileSize,
+              width,
+              height,
+            },
+            timeAnim,
+          });
+          index--;
+        } else {
+          timeAnim += this.moveAnimationDuration;
+        }
+      }
+
+      while (index >= 0) {
+        arr.push({
+          tile: this.createTile(this.N - 1 - i, index),
+          timeAnim,
+        });
+
+        timeAnim += this.moveAnimationDuration;
+        index--;
+      }
+
+      this.forMove.push(arr);
+    }
+
+    this.tiles = [];
+    this.forMove.forEach((row) => {
+      const arr = [];
+
+      row.forEach(({ tile }) => {
+        arr.push(tile);
+      });
+
+      this.tiles.push(arr);
+    });
+
+    this.forMove = [];
+  }
+
+  animateMove() {}
 }
 
 export default Tiles;
