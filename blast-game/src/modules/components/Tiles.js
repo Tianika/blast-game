@@ -1,5 +1,6 @@
 import DisplayObject from './DisplayObject';
 import { checkCoords, getTileArrForDraw } from '../../utils/helpers';
+import { MIN_TILES_GROUP } from '../../utils/constants';
 
 class Tiles extends DisplayObject {
   constructor(props = {}) {
@@ -14,6 +15,12 @@ class Tiles extends DisplayObject {
     this.context = props.context;
 
     this.tiles = [];
+    this.forAnimate = [];
+    this.forDelete = [];
+
+    this.isAnimation = false;
+    this.animationDuration = 300;
+    this.animationTimeEnd = 0;
   }
 
   create() {
@@ -39,9 +46,10 @@ class Tiles extends DisplayObject {
     }
   }
 
-  delete(x, y) {
-    const coordsArr = [];
-    coordsArr.push({ x, y, isChecked: false });
+  findTiles(x, y) {
+    const findedTiles = [];
+    const coords = [];
+    coords.push({ x, y, isChecked: false });
 
     if (!this.tiles[x][y]) return;
 
@@ -51,16 +59,16 @@ class Tiles extends DisplayObject {
     do {
       isAllFind = false;
 
-      coordsArr.forEach(({ x, y, isChecked }, index) => {
+      coords.forEach(({ x, y, isChecked }, index) => {
         if (isChecked) return;
 
         if (x + 1 >= 0 && x + 1 < this.N) {
           if (
             this.tiles[x + 1][y] &&
             this.tiles[x + 1][y].name === name &&
-            !checkCoords(coordsArr, x + 1, y)
+            !checkCoords(coords, x + 1, y)
           ) {
-            coordsArr.push({ x: x + 1, y, isChecked: false });
+            coords.push({ x: x + 1, y, isChecked: false });
             isAllFind = true;
           }
         }
@@ -69,17 +77,17 @@ class Tiles extends DisplayObject {
           if (
             this.tiles[x - 1][y] &&
             this.tiles[x - 1][y].name === name &&
-            !checkCoords(coordsArr, x - 1, y)
+            !checkCoords(coords, x - 1, y)
           ) {
-            coordsArr.push({ x: x - 1, y, isChecked: false });
+            coords.push({ x: x - 1, y, isChecked: false });
             isAllFind = true;
           }
         }
 
         if (y + 1 >= 0 && y + 1 < this.M) {
           if (this.tiles[x][y + 1] && this.tiles[x][y + 1].name === name) {
-            if (!checkCoords(coordsArr, x, y + 1)) {
-              coordsArr.push({ x, y: y + 1, isChecked: false });
+            if (!checkCoords(coords, x, y + 1)) {
+              coords.push({ x, y: y + 1, isChecked: false });
               isAllFind = true;
             }
           }
@@ -87,22 +95,58 @@ class Tiles extends DisplayObject {
 
         if (y - 1 >= 0 && y - 1 < this.M) {
           if (this.tiles[x][y - 1] && this.tiles[x][y - 1].name === name) {
-            if (!checkCoords(coordsArr, x, y - 1)) {
-              coordsArr.push({ x, y: y - 1, isChecked: false });
+            if (!checkCoords(coords, x, y - 1)) {
+              coords.push({ x, y: y - 1, isChecked: false });
               isAllFind = true;
             }
           }
         }
 
-        coordsArr[index].isChecked = true;
+        coords[index].isChecked = true;
       });
     } while (isAllFind);
 
-    if (coordsArr.length > 1) {
-      coordsArr.forEach(({ x, y }) => {
-        this.tiles[x][y] = null;
-      });
+    coords.forEach(({ x, y }) => {
+      findedTiles.push(this.tiles[x][y]);
+    });
+
+    return findedTiles.length >= MIN_TILES_GROUP
+      ? { findedTiles, coords }
+      : { findedTiles: [], coords: [] };
+  }
+
+  animate() {
+    if (this.forAnimate.length) {
+      this.isAnimation = true;
     }
+
+    if (Date.now() > this.animationTimeEnd) {
+      this.forAnimate = [];
+      this.isAnimation = false;
+    }
+
+    this.forAnimate = this.forAnimate.map(({ image, x, y, width, height }) => {
+      new DisplayObject({ image, x, y, width, height }).draw(this.context);
+
+      const widthResize = Math.ceil((width / this.animationDuration) * 15);
+      const heightResize = Math.ceil((height / this.animationDuration) * 15);
+
+      return {
+        image,
+        width: (width -= widthResize),
+        height: (height -= heightResize),
+        x: (x += widthResize / 2),
+        y: (y += heightResize / 2),
+      };
+    });
+  }
+
+  delete() {
+    this.forDelete.forEach(({ x, y }) => {
+      this.tiles[x][y] = null;
+    });
+
+    this.deleteTiles = [];
   }
 }
 

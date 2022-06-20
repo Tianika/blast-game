@@ -8,7 +8,6 @@ import {
   loadImage,
   getTileArray,
   getCursorPosition,
-  checkCoords,
 } from '../../utils/helpers';
 import Background from './Background';
 import Tiles from './Tiles';
@@ -33,8 +32,6 @@ class Game {
 
     this.tilesSample = [];
     this.tiles = null;
-
-    this.animationDuration = 300;
   }
 
   clearCanvas() {
@@ -69,21 +66,32 @@ class Game {
     this.tiles.create();
 
     this.canvas.addEventListener('click', (event) => {
-      const { x, y } = getCursorPosition(this.canvas, event);
+      if (!this.tiles.isAnimation) {
+        const { x, y } = getCursorPosition(this.canvas, event);
 
-      if (
-        x > this.border &&
-        x < this.canvas.width - this.border &&
-        y > this.border + this.tileShift &&
-        y < this.canvas.width - this.border + this.tileShift
-      ) {
-        const xPos = this.M - Math.floor((x - this.border) / this.tileSize) - 1;
-        const yPos =
-          this.N -
-          Math.floor((y - this.border - this.tileShift) / this.tileSize) -
-          1;
+        if (
+          x > this.border &&
+          x < this.canvas.width - this.border &&
+          y > this.border + this.tileShift &&
+          y < this.canvas.width - this.border + this.tileShift
+        ) {
+          const xPos =
+            this.M - Math.floor((x - this.border) / this.tileSize) - 1;
+          const yPos =
+            this.N -
+            Math.floor((y - this.border - this.tileShift) / this.tileSize) -
+            1;
 
-        this.tiles.delete(xPos, yPos);
+          const tiles = this.tiles.findTiles(xPos, yPos);
+
+          if (tiles) {
+            this.tiles.forDelete = [...tiles.coords];
+            this.tiles.forAnimate = [...tiles.findedTiles];
+
+            this.tiles.animationTimeEnd =
+              Date.now() + this.tiles.animationDuration;
+          }
+        }
       }
     });
 
@@ -95,6 +103,8 @@ class Game {
 
     this.background.draw();
     this.tiles.draw();
+    this.tiles.delete();
+    this.tiles.animate();
   }
 
   render(timestamp) {
