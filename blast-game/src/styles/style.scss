@@ -9,6 +9,7 @@ body {
 .sceneWrapper {
   width: 100%;
   height: 100%;
+  padding: 10px;
 }
 
 .startScene {
@@ -41,5 +42,63 @@ body {
     padding: 5vh;
     font-size: 7vh;
     line-height: 10vh;
+  }
+}
+
+.gameScene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gameHeader,
+.gameMain {
+  padding: 10px 0;
+}
+
+.gameMain {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
+}
+
+.blockScore {
+  min-width: 35vh;
+  min-height: 35vh;
+  background: url('../assets/png/score/blockScoreBg.png') 100% 100% no-repeat;
+  background-size: cover;
+  background-position: center center;
+  color: $font;
+}
+
+.gameMoves {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 20vh;
+  min-height: 20vh;
+  background: url('../assets/png/score/movesBg.png') 100% 100% no-repeat;
+  background-size: contain;
+  background-position: center center;
+  padding: 10px;
+  font-size: 7vh;
+  line-height: 8vh;
+}
+
+.score {
+  text-align: center;
+  width: 90%;
+  background: url('../assets/png/score/scoreBg.png') 100% 100% no-repeat;
+  background-size: contain;
+  background-position: center center;
+  margin: 0 auto;
+  font-size: 5vh;
+  line-height: 6vh;
+}
+
+canvas {
+  &:hover {
+    cursor: pointer;
   }
 }

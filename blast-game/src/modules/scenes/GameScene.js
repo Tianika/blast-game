@@ -1,16 +1,15 @@
 import Game from '../components/Game';
+import Score from '../components/Score';
 import Scene from './Scene';
 
 class GameScene extends Scene {
   constructor(props) {
     super(props);
-
-    this.N = 10;
-    this.M = 8;
   }
 
   async draw() {
     super.draw();
+    this.scene.classList.add('gameScene');
 
     const header = document.createElement('header');
     header.classList.add('gameHeader');
@@ -22,11 +21,14 @@ class GameScene extends Scene {
     this.scene.appendChild(main);
 
     const game = new Game({
-      columnCount: this.N,
-      rowCount: this.M,
       parentElement: main,
     });
     await game.startGame();
+
+    const score = new Score({
+      parentElement: main,
+    });
+    score.draw();
   }
 }
 

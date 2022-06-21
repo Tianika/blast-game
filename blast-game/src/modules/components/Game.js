@@ -13,10 +13,13 @@ import Background from './Background';
 import Tiles from './Tiles';
 
 class Game {
-  constructor({ columnCount, rowCount, parentElement }) {
-    this.columnCount = columnCount;
-    this.rowCount = rowCount;
+  constructor({ parentElement }) {
     this.parent = parentElement;
+
+    this.columnCount = 8;
+    this.rowCount = 10;
+    this.score = 0;
+    this.gameMoves = 10;
 
     this.tileSize = TILE_SIZE;
     this.tileShift = TILE_SHIFT;
