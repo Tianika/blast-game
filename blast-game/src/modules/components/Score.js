@@ -1,22 +1,20 @@
+import { createElementWithClass } from '../../utils/helpers';
 import Game from './Game';
 
 class Score extends Game {
   constructor(props) {
     super(props);
 
-    this.blockScore = document.createElement('div');
-    this.blockScore.classList = 'blockScore';
+    this.blockScore = createElementWithClass('div', 'blockScore');
   }
 
   draw() {
     this.parent.appendChild(this.blockScore);
 
-    const gameMoves = document.createElement('div');
-    gameMoves.classList = 'gameMoves';
+    const gameMoves = createElementWithClass('div', 'gameMoves');
     gameMoves.innerHTML = this.gameMoves;
 
-    const score = document.createElement('div');
-    score.classList = 'score';
+    const score = createElementWithClass('div', 'score');
     score.innerText = `ОЧКИ: 
                       ${this.score}`;
 

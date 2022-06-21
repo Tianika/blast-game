@@ -47,3 +47,10 @@ export function checkCoords(arr, newX, newY) {
 
   return result;
 }
+
+export function createElementWithClass(tagName, className) {
+  const element = document.createElement(tagName);
+  element.classList.add(className);
+
+  return element;
+}

@@ -1,3 +1,4 @@
+import { createElementWithClass } from '../../utils/helpers';
 import GameScene from './GameScene';
 import Scene from './Scene';
 
@@ -9,9 +10,8 @@ class StartScene extends Scene {
   draw() {
     super.draw();
 
-    const button = document.createElement('button');
-    button.classList.add('startGameBtn');
-    button.innerHTML = 'Start game';
+    const button = createElementWithClass('button', 'startGameBtn');
+    button.innerHTML = 'Начать игру';
 
     button.addEventListener('click', async () => {
       const gameScene = new GameScene();

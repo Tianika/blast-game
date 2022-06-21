@@ -8,6 +8,7 @@ import {
   loadImage,
   getTileArray,
   getCursorPosition,
+  createElementWithClass,
 } from '../../utils/helpers';
 import Background from './Background';
 import Tiles from './Tiles';
@@ -25,7 +26,7 @@ class Game {
     this.tileShift = TILE_SHIFT;
     this.border = BG_BORDER;
 
-    this.canvas = document.createElement('canvas');
+    this.canvas = createElementWithClass('canvas', 'canvas');
     this.context = this.canvas.getContext('2d');
 
     this.canvas.width = this.columnCount * this.tileSize + this.border * 2;
