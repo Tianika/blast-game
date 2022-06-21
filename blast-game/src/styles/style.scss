@@ -1,5 +1,45 @@
 $bg-color: #a1a1a1;
+$font: #ffffff;
 
 body {
   background-color: $bg-color;
+}
+
+#root,
+.startScene {
+  width: 100%;
+  height: 100%;
+}
+
+.startScene {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.startGameBtn {
+  min-width: 30vw;
+  min-height: 20vh;
+  font-size: 7vh;
+  line-height: 10vh;
+  padding: 5vh;
+  border-radius: 15px;
+  color: $font;
+  background-color: transparent;
+  background: url('../assets/png/buttons/button.png') 100% 100% no-repeat;
+  background-size: contain;
+  background-position: center center;
+  transition: all 300ms;
+
+  &:hover {
+    padding: 6vh;
+    font-size: 8vh;
+    line-height: 11vh;
+  }
+
+  &:active {
+    padding: 5vh;
+    font-size: 7vh;
+    line-height: 10vh;
+  }
 }

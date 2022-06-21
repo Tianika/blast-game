@@ -1,15 +1,11 @@
-import Game from '../components/Game';
+import StartScene from '../scenes/StartScene';
 
 class App {
-  constructor() {
-    this.N = 10;
-    this.M = 8;
-  }
+  constructor() {}
 
-  async start() {
-    const game = new Game({ columnCount: this.N, rowCount: this.M });
-
-    await game.startGame();
+  start() {
+    const startScene = new StartScene();
+    startScene.draw();
   }
 }
 

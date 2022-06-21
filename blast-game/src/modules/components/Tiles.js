@@ -218,7 +218,6 @@ class Tiles extends DisplayObject {
       this.moveTime = Math.max(this.moveTime, time);
       this.forMove.push(arr);
     }
-    console.log(this.moveTime);
   }
 
   animateMove() {

@@ -40,6 +40,7 @@ class Game {
 
   async startGame() {
     const root = document.querySelector('#root');
+    root.innerHTML = '';
     root.appendChild(this.canvas);
 
     this.bgImage = await loadImage(GAME_BG);
