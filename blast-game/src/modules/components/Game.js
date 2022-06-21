@@ -13,9 +13,9 @@ import Background from './Background';
 import Tiles from './Tiles';
 
 class Game {
-  constructor({ N, M }) {
-    this.N = N;
-    this.M = M;
+  constructor({ columnCount, rowCount }) {
+    this.columnCount = columnCount;
+    this.rowCount = rowCount;
     this.tileSize = TILE_SIZE;
     this.tileShift = TILE_SHIFT;
     this.border = BG_BORDER;
@@ -23,9 +23,9 @@ class Game {
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
 
-    this.canvas.width = this.N * this.tileSize + this.border * 2;
+    this.canvas.width = this.columnCount * this.tileSize + this.border * 2;
     this.canvas.height =
-      this.M * this.tileSize + this.border * 2 + this.tileShift;
+      this.rowCount * this.tileSize + this.border * 2 + this.tileShift;
 
     this.bgImage = null;
     this.background = null;
@@ -55,8 +55,8 @@ class Game {
     });
 
     this.tiles = new Tiles({
-      N: this.N,
-      M: this.M,
+      columnCount: this.columnCount,
+      rowCount: this.rowCount,
       tilesSample: this.tilesSample,
       tileSize: this.tileSize,
       border: this.border,
@@ -76,9 +76,9 @@ class Game {
           y < this.canvas.width - this.border + this.tileShift
         ) {
           const xPos =
-            this.M - Math.floor((x - this.border) / this.tileSize) - 1;
+            this.rowCount - Math.floor((x - this.border) / this.tileSize) - 1;
           const yPos =
-            this.N -
+            this.columnCount -
             Math.floor((y - this.border - this.tileShift) / this.tileSize) -
             1;
 

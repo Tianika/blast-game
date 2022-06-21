@@ -6,8 +6,8 @@ class Tiles extends DisplayObject {
   constructor(props = {}) {
     super(props);
 
-    this.N = props.N;
-    this.M = props.M;
+    this.columnCount = props.columnCount;
+    this.rowCount = props.rowCount;
     this.tilesSample = props.tilesSample;
     this.tileSize = props.tileSize;
     this.border = props.border;
@@ -27,10 +27,10 @@ class Tiles extends DisplayObject {
   }
 
   create() {
-    for (let i = this.N - 1; i >= 0; i--) {
+    for (let i = this.columnCount - 1; i >= 0; i--) {
       const arr = [];
 
-      for (let j = this.M - 1; j >= 0; j--) {
+      for (let j = this.rowCount - 1; j >= 0; j--) {
         arr.push(this.createTile(i, j));
       }
 
@@ -53,8 +53,8 @@ class Tiles extends DisplayObject {
   }
 
   draw() {
-    for (let i = 0; i < this.N; i++) {
-      for (let j = 0; j < this.M; j++) {
+    for (let i = 0; i < this.columnCount; i++) {
+      for (let j = 0; j < this.rowCount; j++) {
         if (this.tiles[i][j]) {
           const { image, x, y, width, height } = this.tiles[i][j];
 
@@ -80,7 +80,7 @@ class Tiles extends DisplayObject {
       coords.forEach(({ x, y, isChecked }, index) => {
         if (isChecked) return;
 
-        if (x + 1 >= 0 && x + 1 < this.N) {
+        if (x + 1 >= 0 && x + 1 < this.columnCount) {
           if (
             this.tiles[x + 1][y] &&
             this.tiles[x + 1][y].name === name &&
@@ -91,7 +91,7 @@ class Tiles extends DisplayObject {
           }
         }
 
-        if (x - 1 >= 0 && x - 1 < this.N) {
+        if (x - 1 >= 0 && x - 1 < this.columnCount) {
           if (
             this.tiles[x - 1][y] &&
             this.tiles[x - 1][y].name === name &&
@@ -102,7 +102,7 @@ class Tiles extends DisplayObject {
           }
         }
 
-        if (y + 1 >= 0 && y + 1 < this.M) {
+        if (y + 1 >= 0 && y + 1 < this.rowCount) {
           if (this.tiles[x][y + 1] && this.tiles[x][y + 1].name === name) {
             if (!checkCoords(coords, x, y + 1)) {
               coords.push({ x, y: y + 1, isChecked: false });
@@ -111,7 +111,7 @@ class Tiles extends DisplayObject {
           }
         }
 
-        if (y - 1 >= 0 && y - 1 < this.M) {
+        if (y - 1 >= 0 && y - 1 < this.rowCount) {
           if (this.tiles[x][y - 1] && this.tiles[x][y - 1].name === name) {
             if (!checkCoords(coords, x, y - 1)) {
               coords.push({ x, y: y - 1, isChecked: false });
@@ -175,19 +175,18 @@ class Tiles extends DisplayObject {
   }
 
   move() {
-    for (let i = 0; i < this.N; i++) {
+    for (let i = 0; i < this.columnCount; i++) {
       let time = 0;
       let index = 0;
       const arr = [];
 
-      for (let j = 0; j < this.M; j++) {
+      for (let j = 0; j < this.rowCount; j++) {
         const tile = this.tiles[i][j];
 
-        console.log('time1', time);
         if (tile) {
           arr.push({
             tile,
-            timeAnimation: time * this.moveAnimationDuration,
+            timeAnimation: time,
           });
         } else {
           time += 1;
@@ -195,18 +194,15 @@ class Tiles extends DisplayObject {
       }
 
       while (index < time) {
-        console.log('time2', time);
-        console.log('index', index);
-        console.log(this.createTile(this.N - 1 - i, -1 - index));
+        const newTile = this.createTile(this.columnCount - 1 - i, -1 - index);
 
         arr.push({
-          tile: this.createTile(this.N - 1 - i, -1 - index),
-          timeAnimation: time * this.moveAnimationDuration,
+          tile: newTile,
+          timeAnimation: time + index,
         });
 
         index++;
       }
-      // console.log(arr);
 
       this.forMove.push(arr);
     }
@@ -216,11 +212,10 @@ class Tiles extends DisplayObject {
     if (this.forMove.length < 1) return;
 
     this.tiles = [];
-    // this.isAnimation = true;
-
-    for (let i = 0; i < this.N; i++) {
+    for (let i = 0; i < this.columnCount; i++) {
       const arr = [];
-      for (let j = 0; j < this.M; j++) {
+
+      for (let j = 0; j < this.rowCount; j++) {
         const { tile, timeAnimation } = this.forMove[i][j];
         const { name, image, x, y, width, height } = tile;
 
@@ -230,17 +225,15 @@ class Tiles extends DisplayObject {
               name,
               image,
               x,
-              y:
-                y +
-                (this.tileSize * timeAnimation) / this.moveAnimationDuration,
+              y: y + this.tileSize,
               width,
               height,
             },
-            timeAnimation: timeAnimation - this.moveAnimationDuration,
+            timeAnimation: timeAnimation - 1,
           };
-          this.forMove[i][j].timeAnimation -= this.moveAnimationDuration;
         }
-        arr.push(tile);
+
+        arr.push(this.forMove[i][j].tile);
       }
       this.tiles.push(arr);
     }
