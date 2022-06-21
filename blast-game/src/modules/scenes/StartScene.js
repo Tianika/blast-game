@@ -1,27 +1,29 @@
+import Scene from './Scene';
 import Game from '../components/Game';
 
-class StartScene {
-  constructor() {
+class StartScene extends Scene {
+  constructor(props) {
+    super(props);
+
     this.N = 10;
     this.M = 8;
-
-    this.scene = document.createElement('div');
-    this.scene.classList.add('startScene');
   }
 
   draw() {
+    this.clear();
+    super.draw();
+
     const button = document.createElement('button');
     button.classList.add('startGameBtn');
     button.innerHTML = 'Start game';
-    this.scene.appendChild(button);
 
     button.addEventListener('click', async () => {
       const game = new Game({ columnCount: this.N, rowCount: this.M });
       await game.startGame();
     });
 
-    const root = document.querySelector('#root');
-    root.appendChild(this.scene);
+    this.scene.classList.add('startScene');
+    this.scene.appendChild(button);
   }
 }
 
