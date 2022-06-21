@@ -11,6 +11,7 @@ class Scene {
   }
 
   draw() {
+    this.clear();
     root.appendChild(this.scene);
   }
 }

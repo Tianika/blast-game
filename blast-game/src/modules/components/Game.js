@@ -13,9 +13,11 @@ import Background from './Background';
 import Tiles from './Tiles';
 
 class Game {
-  constructor({ columnCount, rowCount }) {
+  constructor({ columnCount, rowCount, parentElement }) {
     this.columnCount = columnCount;
     this.rowCount = rowCount;
+    this.parent = parentElement;
+
     this.tileSize = TILE_SIZE;
     this.tileShift = TILE_SHIFT;
     this.border = BG_BORDER;
@@ -39,9 +41,7 @@ class Game {
   }
 
   async startGame() {
-    const root = document.querySelector('#root');
-    root.innerHTML = '';
-    root.appendChild(this.canvas);
+    this.parent.appendChild(this.canvas);
 
     this.bgImage = await loadImage(GAME_BG);
     this.tilesSample = await getTileArray();
