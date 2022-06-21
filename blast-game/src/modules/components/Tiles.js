@@ -23,7 +23,7 @@ class Tiles extends DisplayObject {
     this.deleteAnimationDuration = 300;
     this.moveAnimationDuration = 100;
     this.animationTimeEnd = 0;
-    this.moveTimeEnd = 0;
+    this.moveTime = 0;
   }
 
   create() {
@@ -125,12 +125,20 @@ class Tiles extends DisplayObject {
     } while (isAllFind);
 
     coords.forEach(({ x, y }) => {
-      findedTiles.push(this.tiles[x][y]);
+      findedTiles.push({ ...this.tiles[x][y] });
     });
 
     return findedTiles.length >= MIN_TILES_GROUP
       ? { findedTiles, coords }
       : { findedTiles: [], coords: [] };
+  }
+
+  delete() {
+    this.forDelete.forEach(({ x, y }) => {
+      this.tiles[x][y] = null;
+    });
+
+    this.forDelete = [];
   }
 
   animateDelete(timestamp) {
@@ -166,14 +174,6 @@ class Tiles extends DisplayObject {
     }
   }
 
-  delete() {
-    this.forDelete.forEach(({ x, y }) => {
-      this.tiles[x][y] = null;
-    });
-
-    this.deleteTiles = [];
-  }
-
   move() {
     for (let i = 0; i < this.columnCount; i++) {
       let time = 0;
@@ -183,29 +183,42 @@ class Tiles extends DisplayObject {
       for (let j = 0; j < this.rowCount; j++) {
         const tile = this.tiles[i][j];
 
-        if (tile) {
+        if (!tile) {
+          time += 1;
+        } else {
+          const { name, image, x, y, width, height } = tile;
+
           arr.push({
-            tile,
+            tile: {
+              name,
+              image,
+              x,
+              y,
+              width,
+              height,
+            },
             timeAnimation: time,
           });
-        } else {
-          time += 1;
         }
       }
 
       while (index < time) {
-        const newTile = this.createTile(this.columnCount - 1 - i, -1 - index);
+        const { name, image, x, y, width, height } = this.createTile(
+          this.columnCount - 1 - i,
+          -1 - index
+        );
 
         arr.push({
-          tile: newTile,
-          timeAnimation: time + index,
+          tile: { name, image, x, y, width, height },
+          timeAnimation: time,
         });
 
         index++;
       }
-
+      this.moveTime = Math.max(this.moveTime, time);
       this.forMove.push(arr);
     }
+    console.log(this.moveTime);
   }
 
   animateMove() {
@@ -235,10 +248,15 @@ class Tiles extends DisplayObject {
 
         arr.push(this.forMove[i][j].tile);
       }
+
       this.tiles.push(arr);
     }
 
-    // this.forMove = [];
+    this.moveTime -= 1;
+
+    if (!this.moveTime) {
+      this.forMove = [];
+    }
   }
 }
 

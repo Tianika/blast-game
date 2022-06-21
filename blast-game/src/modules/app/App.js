@@ -2,8 +2,8 @@ import Game from '../components/Game';
 
 class App {
   constructor() {
-    this.N = 8;
-    this.M = 10;
+    this.N = 10;
+    this.M = 8;
   }
 
   async start() {

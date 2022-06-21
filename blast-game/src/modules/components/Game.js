@@ -73,12 +73,14 @@ class Game {
           x > this.border &&
           x < this.canvas.width - this.border &&
           y > this.border + this.tileShift &&
-          y < this.canvas.width - this.border + this.tileShift
+          y < this.canvas.height - this.border + this.tileShift
         ) {
           const xPos =
-            this.rowCount - Math.floor((x - this.border) / this.tileSize) - 1;
-          const yPos =
             this.columnCount -
+            Math.floor((x - this.border) / this.tileSize) -
+            1;
+          const yPos =
+            this.rowCount -
             Math.floor((y - this.border - this.tileShift) / this.tileSize) -
             1;
 
