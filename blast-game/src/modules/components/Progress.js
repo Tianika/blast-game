@@ -10,7 +10,7 @@ class Progress extends Game {
 
   draw() {
     const progress = createElementWithClass('div', 'gameProgress');
-    progress.innerHTML = 'прогресс';
+    progress.innerHTML = 'ПРОГРЕСС';
 
     const progressBarContainer = createElementWithClass(
       'div',

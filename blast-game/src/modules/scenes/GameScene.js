@@ -1,4 +1,5 @@
 import { createElementWithClass } from '../../utils/helpers';
+import Bonuses from '../components/Bonuses';
 import Game from '../components/Game';
 import Progress from '../components/Progress';
 import Scene from './Scene';
@@ -24,6 +25,11 @@ class GameScene extends Scene {
       parentElement: main,
     });
     progress.draw();
+
+    const bonuses = new Bonuses({
+      parentElement: main,
+    });
+    bonuses.draw();
   }
 }
 
