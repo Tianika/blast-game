@@ -3,6 +3,13 @@ $font: #ffffff;
 
 body {
   background-color: $bg-color;
+  font-family: 'Balsamiq Sans', cursive;
+  font-weight: 700;
+}
+
+button {
+  font-family: 'Balsamiq Sans', cursive;
+  font-weight: 700;
 }
 
 #root,
@@ -88,8 +95,8 @@ body {
   background-size: contain;
   background-position: center center;
   padding: 10px;
-  font-size: 7vh;
-  line-height: 8vh;
+  font-size: 8vh;
+  line-height: 9vh;
 }
 
 .scoreCount {
@@ -100,8 +107,9 @@ body {
   background-size: contain;
   background-position: center center;
   margin: 0 auto;
-  font-size: 5vh;
-  line-height: 6vh;
+  font-size: 4vh;
+  line-height: 5vh;
+  padding: 10px;
 }
 
 .canvas {
@@ -170,8 +178,8 @@ body {
   background-size: contain;
   background-position: center center;
   color: $font;
-  font-size: 50px;
-  line-height: 60px;
+  font-size: 46px;
+  line-height: 56px;
   padding: 50px;
 }
 
@@ -187,7 +195,6 @@ body {
   font-size: 3vh;
   line-height: 4vh;
   color: $font;
-  margin-bottom: 20px;
   grid-area: bonuses;
 }
 
