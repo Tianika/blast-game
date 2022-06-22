@@ -69,10 +69,6 @@ body {
   grid-area: score;
 }
 
-.gameProgress {
-  grid-area: progress;
-}
-
 .gameMovesCount {
   display: flex;
   justify-content: center;
@@ -107,15 +103,16 @@ body {
 }
 
 .gameProgress {
-  width: 70%;
+  width: 600px;
   height: 140px;
   background: url('../assets/png/progressBar/progressBg.png') no-repeat;
-  background-size: cover;
-  background-position: center -30px;
+  background-size: contain;
+  background-position: center -25px;
   padding: 10px;
   color: $font;
   font-size: 30px;
   text-align: center;
+  grid-area: progress;
 }
 
 .progressBarContainer {
