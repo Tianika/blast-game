@@ -1,7 +1,7 @@
 import { createElementWithClass } from '../../utils/helpers';
 import Game from './Game';
 
-class Score extends Game {
+class Progress extends Game {
   constructor(props) {
     super(props);
 
@@ -21,4 +21,4 @@ class Score extends Game {
   }
 }
 
-export default Score;
+export default Progress;

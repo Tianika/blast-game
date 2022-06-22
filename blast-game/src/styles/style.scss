@@ -51,16 +51,12 @@ body {
   align-items: center;
 }
 
-.gameHeader,
-.gameMain {
-  padding: 10px 0;
-}
-
 .gameMain {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 50px;
+  padding: 10px 0;
 }
 
 .blockScore {

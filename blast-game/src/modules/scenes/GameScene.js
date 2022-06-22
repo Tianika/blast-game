@@ -1,6 +1,6 @@
 import { createElementWithClass } from '../../utils/helpers';
 import Game from '../components/Game';
-import Score from '../components/Score';
+import Progress from '../components/Progress';
 import Scene from './Scene';
 
 class GameScene extends Scene {
@@ -12,10 +12,6 @@ class GameScene extends Scene {
     super.draw();
     this.scene.classList.add('gameScene');
 
-    const header = createElementWithClass('header', 'gameHeader');
-    header.innerHTML = 'header';
-    this.scene.appendChild(header);
-
     const main = createElementWithClass('main', 'gameMain');
     this.scene.appendChild(main);
 
@@ -24,10 +20,10 @@ class GameScene extends Scene {
     });
     await game.startGame();
 
-    const score = new Score({
+    const progress = new Progress({
       parentElement: main,
     });
-    score.draw();
+    progress.draw();
   }
 }
 
