@@ -1,6 +1,7 @@
 import DisplayObject from './DisplayObject';
 import { checkCoords, getRandomNum } from '../../utils/helpers';
-import { MIN_TILES_GROUP } from '../../utils/constants';
+import EndScene from '../scenes/EndScene';
+import { END_GAME_MAP } from '../../utils/constants';
 
 class Tiles extends DisplayObject {
   constructor(props = {}) {
@@ -13,6 +14,7 @@ class Tiles extends DisplayObject {
     this.border = props.border;
     this.tileShift = props.tileShift;
     this.context = props.context;
+    this.minTilesGroup = props.minTilesGroup;
 
     this.tiles = [];
     this.forAnimate = [];
@@ -20,12 +22,15 @@ class Tiles extends DisplayObject {
     this.forMove = [];
 
     this.isAnimation = false;
+    this.shuffleAnimationDuration = 300;
     this.deleteAnimationDuration = 300;
     this.moveAnimationDuration = 100;
     this.animationTimeEnd = 0;
     this.moveTime = 0;
 
     this.shuffleCount = 2;
+
+    this.endGame = new EndScene();
   }
 
   create() {
@@ -134,7 +139,7 @@ class Tiles extends DisplayObject {
       findedTiles.push({ ...this.tiles[x][y] });
     });
 
-    return findedTiles.length >= MIN_TILES_GROUP
+    return findedTiles.length >= this.minTilesGroup
       ? { findedTiles, coords }
       : null;
   }
@@ -298,7 +303,7 @@ class Tiles extends DisplayObject {
       }
     }
 
-    this.shuffle -= 1;
+    this.shuffleCount -= 1;
   }
 
   checkShuffleResult() {
@@ -307,10 +312,10 @@ class Tiles extends DisplayObject {
         setTimeout(() => {
           this.shuffleTiles();
           this.checkShuffleResult();
-        }, 1000);
+        }, this.shuffleAnimationDuration);
       }
     } else {
-      console.log('game over');
+      this.endGame.draw(END_GAME_MAP.lost);
     }
   }
 }

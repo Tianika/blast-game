@@ -3,6 +3,7 @@ import {
   TILE_SHIFT,
   BG_BORDER,
   GAME_BG,
+  END_GAME_MAP,
 } from '../../utils/constants';
 import {
   loadImage,
@@ -10,6 +11,7 @@ import {
   getCursorPosition,
   createElementWithClass,
 } from '../../utils/helpers';
+import EndScene from '../scenes/EndScene';
 import Background from './Background';
 import Tiles from './Tiles';
 
@@ -17,11 +19,12 @@ class Game {
   constructor({ parentElement }) {
     this.parent = parentElement;
 
-    this.columnCount = 3;
-    this.rowCount = 2;
+    this.columnCount = 8;
+    this.rowCount = 10;
     this.scoreCount = 0;
     this.gameMovesCount = 20;
-    this.scoreForWin = 100;
+    this.minTilesGroup = 2;
+    this.scoreForWin = Math.max(this.columnCount, this.rowCount) * 10;
 
     this.tileSize = TILE_SIZE;
     this.tileShift = TILE_SHIFT;
@@ -39,6 +42,8 @@ class Game {
 
     this.tilesSample = [];
     this.tiles = null;
+
+    this.endGame = new EndScene();
   }
 
   clearCanvas() {
@@ -68,6 +73,7 @@ class Game {
       border: this.border,
       tileShift: this.tileShift,
       context: this.context,
+      minTilesGroup: this.minTilesGroup,
     });
     this.tiles.create();
 
@@ -104,6 +110,22 @@ class Game {
 
             this.updateGameMoves();
             this.updateScore(tiles.findedTiles.length);
+
+            if (this.scoreCount >= this.scoreForWin) {
+              this.tiles.isAnimation = true;
+
+              setTimeout(() => {
+                this.endGame.draw(END_GAME_MAP.win);
+              }, this.tiles.deleteAnimationDuration);
+            }
+
+            if (this.gameMovesCount === 0) {
+              this.tiles.isAnimation = true;
+
+              setTimeout(() => {
+                this.endGame.draw(END_GAME_MAP.lost);
+              }, this.tiles.deleteAnimationDuration);
+            }
           }
         }
       }
@@ -113,8 +135,6 @@ class Game {
   }
 
   draw() {
-    console.log('draw');
-
     this.background.draw();
     this.tiles.draw();
     this.tiles.animateMove();
@@ -136,7 +156,6 @@ class Game {
   updateScore(score) {
     this.scoreCount += score;
     const scoreCount = document.querySelector('.scoreCount div');
-
     scoreCount.innerHTML = this.scoreCount;
 
     this.updateProgress();

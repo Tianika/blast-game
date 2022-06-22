@@ -17,31 +17,37 @@ body {
   align-items: center;
 }
 
-.startGameBtn {
-  min-width: 30vw;
-  min-height: 20vh;
-  font-size: 7vh;
-  line-height: 10vh;
-  padding: 5vh;
+.startGameBtn,
+.startAgainBtn {
+  position: relative;
+  min-width: 35vw;
+  height: 15vh;
+  font-size: 5vh;
+  line-height: 7vh;
   border-radius: 15px;
+  padding: 10px;
   color: $font;
+  background-repeat: no-repeat;
   background-color: transparent;
-  background: url('../assets/png/buttons/button.png') 100% 100% no-repeat;
   background-size: contain;
   background-position: center center;
   transition: all 300ms;
 
   &:hover {
-    padding: 6vh;
-    font-size: 8vh;
-    line-height: 11vh;
+    transform: scale(1.1);
   }
 
   &:active {
-    padding: 5vh;
-    font-size: 7vh;
-    line-height: 10vh;
+    transform: scale(1);
   }
+}
+
+.startGameBtn {
+  background-image: url('../assets/png/buttons/button.png');
+}
+
+.startAgainBtn {
+  background-image: url('../assets/png/buttons/button2.png');
 }
 
 .gameScene {
@@ -62,7 +68,8 @@ body {
 .blockScore {
   min-width: 35vh;
   min-height: 35vh;
-  background: url('../assets/png/score/blockScoreBg.png') 100% 100% no-repeat;
+  background-image: url('../assets/png/score/blockScoreBg.png');
+  background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
   color: $font;
@@ -75,7 +82,8 @@ body {
   align-items: center;
   min-width: 20vh;
   min-height: 20vh;
-  background: url('../assets/png/score/movesBg.png') 100% 100% no-repeat;
+  background-image: url('../assets/png/score/movesBg.png');
+  background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
   padding: 10px;
@@ -86,7 +94,8 @@ body {
 .scoreCount {
   text-align: center;
   width: 90%;
-  background: url('../assets/png/score/scoreBg.png') 100% 100% no-repeat;
+  background-image: url('../assets/png/score/scoreBg.png');
+  background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;
   margin: 0 auto;
@@ -105,7 +114,8 @@ body {
 .gameProgress {
   width: 600px;
   height: 140px;
-  background: url('../assets/png/progressBar/progressBg.png') no-repeat;
+  background-image: url('../assets/png/progressBar/progressBg.png');
+  background-repeat: no-repeat;
   background-size: contain;
   background-position: center -25px;
   padding: 10px;
@@ -119,7 +129,8 @@ body {
   position: relative;
   width: 70%;
   height: 30px;
-  background: url('../assets/png/progressBar/progressBarBg.png') no-repeat;
+  background-image: url('../assets/png/progressBar/progressBarBg.png');
+  background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
   margin: 2vh auto;
@@ -133,6 +144,32 @@ body {
   left: -100%;
   width: 100%;
   height: 23px;
-  background: url('../assets/png/progressBar/progressBar.png') no-repeat;
+  background-image: url('../assets/png/progressBar/progressBar.png');
+  background-repeat: no-repeat;
   background-size: 100% 23px;
+}
+
+.endScene {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.resultMessage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 50%;
+  min-height: 50%;
+  background-image: url('../assets/png/score/blockScoreBg.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center center;
+  color: $font;
+  font-size: 50px;
+  line-height: 60px;
+  padding: 50px;
 }
