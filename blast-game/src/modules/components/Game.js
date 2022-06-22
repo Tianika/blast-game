@@ -21,6 +21,7 @@ class Game {
     this.rowCount = 10;
     this.scoreCount = 0;
     this.gameMovesCount = 20;
+    this.scoreForWin = 100;
 
     this.tileSize = TILE_SIZE;
     this.tileShift = TILE_SHIFT;
@@ -129,18 +130,25 @@ class Game {
     this.gameMovesCount -= 1;
     const gameMovesCount = document.querySelector('.gameMovesCount');
 
-    if (gameMovesCount) {
-      gameMovesCount.innerHTML = this.gameMovesCount;
-    }
+    gameMovesCount.innerHTML = this.gameMovesCount;
   }
 
   updateScore(score) {
     this.scoreCount += score;
     const scoreCount = document.querySelector('.scoreCount div');
 
-    if (scoreCount) {
-      scoreCount.innerHTML = this.scoreCount;
-    }
+    scoreCount.innerHTML = this.scoreCount;
+
+    this.updateProgress();
+  }
+
+  updateProgress() {
+    const progress = document.querySelector('.progressBar');
+
+    progress.style.left = `${
+      -100 +
+      (Math.min(this.scoreCount, this.scoreForWin) / this.scoreForWin) * 100
+    }%`;
   }
 }
 
