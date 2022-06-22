@@ -17,8 +17,8 @@ class Game {
   constructor({ parentElement }) {
     this.parent = parentElement;
 
-    this.columnCount = 8;
-    this.rowCount = 10;
+    this.columnCount = 3;
+    this.rowCount = 2;
     this.scoreCount = 0;
     this.gameMovesCount = 20;
     this.scoreForWin = 100;

@@ -24,6 +24,8 @@ class Tiles extends DisplayObject {
     this.moveAnimationDuration = 100;
     this.animationTimeEnd = 0;
     this.moveTime = 0;
+
+    this.shuffleCount = 2;
   }
 
   create() {
@@ -35,6 +37,10 @@ class Tiles extends DisplayObject {
       }
 
       this.tiles.push(arr);
+    }
+    if (!this.checkPossibleMove()) {
+      this.shuffleTiles();
+      this.checkShuffleResult();
     }
   }
 
@@ -255,6 +261,56 @@ class Tiles extends DisplayObject {
 
     if (!this.moveTime) {
       this.forMove = [];
+      this.checkShuffleResult();
+    }
+  }
+
+  checkPossibleMove() {
+    let isPossible = false;
+
+    for (let i = 0; i < this.tiles.length; i++) {
+      for (let j = 0; j < this.tiles[i].length; j++) {
+        const tiles = this.findTiles(i, j);
+
+        if (tiles) {
+          isPossible = true;
+          break;
+        }
+      }
+    }
+
+    return isPossible;
+  }
+
+  shuffleTiles() {
+    this.tiles.sort(() => Math.random() - 0.5);
+
+    this.tiles.forEach((column) => {
+      column.sort(() => Math.random() - 0.5);
+    });
+
+    for (let i = 0; i < this.columnCount; i++) {
+      for (let j = 0; j < this.rowCount; j++) {
+        this.tiles[i][j].x =
+          (this.columnCount - 1 - i) * this.tileSize + this.border;
+        this.tiles[i][j].y =
+          (this.rowCount - 1 - j) * this.tileSize + this.border;
+      }
+    }
+
+    this.shuffle -= 1;
+  }
+
+  checkShuffleResult() {
+    if (this.shuffleCount > -1) {
+      if (!this.checkPossibleMove()) {
+        setTimeout(() => {
+          this.shuffleTiles();
+          this.checkShuffleResult();
+        }, 1000);
+      }
+    } else {
+      console.log('game over');
     }
   }
 }
