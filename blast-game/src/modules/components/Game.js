@@ -19,8 +19,8 @@ class Game {
 
     this.columnCount = 8;
     this.rowCount = 10;
-    this.score = 0;
-    this.gameMoves = 10;
+    this.scoreCount = 0;
+    this.gameMovesCount = 20;
 
     this.tileSize = TILE_SIZE;
     this.tileShift = TILE_SHIFT;
@@ -100,6 +100,9 @@ class Game {
 
             this.tiles.delete();
             this.tiles.animateDelete();
+
+            this.updateGameMoves();
+            this.updateScore(tiles.findedTiles.length);
           }
         }
       }
@@ -120,6 +123,24 @@ class Game {
     requestAnimationFrame((time) => this.render(time));
     this.clearCanvas();
     this.draw();
+  }
+
+  updateGameMoves() {
+    this.gameMovesCount -= 1;
+    const gameMovesCount = document.querySelector('.gameMovesCount');
+
+    if (gameMovesCount) {
+      gameMovesCount.innerHTML = this.gameMovesCount;
+    }
+  }
+
+  updateScore(score) {
+    this.scoreCount += score;
+    const scoreCount = document.querySelector('.scoreCount div');
+
+    if (scoreCount) {
+      scoreCount.innerHTML = this.scoreCount;
+    }
   }
 }
 

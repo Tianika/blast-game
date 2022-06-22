@@ -130,7 +130,7 @@ class Tiles extends DisplayObject {
 
     return findedTiles.length >= MIN_TILES_GROUP
       ? { findedTiles, coords }
-      : { findedTiles: [], coords: [] };
+      : null;
   }
 
   delete() {

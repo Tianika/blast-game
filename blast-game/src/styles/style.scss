@@ -72,7 +72,7 @@ body {
   color: $font;
 }
 
-.gameMoves {
+.gameMovesCount {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -86,7 +86,7 @@ body {
   line-height: 8vh;
 }
 
-.score {
+.scoreCount {
   text-align: center;
   width: 90%;
   background: url('../assets/png/score/scoreBg.png') 100% 100% no-repeat;

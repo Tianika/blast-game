@@ -6,17 +6,15 @@ class Score extends Game {
     super(props);
 
     this.blockScore = createElementWithClass('div', 'blockScore');
+    this.parent.appendChild(this.blockScore);
   }
 
   draw() {
-    this.parent.appendChild(this.blockScore);
+    const gameMoves = createElementWithClass('div', 'gameMovesCount');
+    gameMoves.innerHTML = this.gameMovesCount;
 
-    const gameMoves = createElementWithClass('div', 'gameMoves');
-    gameMoves.innerHTML = this.gameMoves;
-
-    const score = createElementWithClass('div', 'score');
-    score.innerText = `ОЧКИ: 
-                      ${this.score}`;
+    const score = createElementWithClass('div', 'scoreCount');
+    score.innerHTML = `ОЧКИ: <div>${this.scoreCount}</div>`;
 
     this.blockScore.appendChild(gameMoves);
     this.blockScore.appendChild(score);
