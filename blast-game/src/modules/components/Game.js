@@ -79,55 +79,7 @@ class Game {
 
     this.canvas.addEventListener('click', (event) => {
       if (!this.tiles.isAnimation) {
-        const { x, y } = getCursorPosition(this.canvas, event);
-
-        if (
-          x > this.border &&
-          x < this.canvas.width - this.border &&
-          y > this.border + this.tileShift &&
-          y < this.canvas.height - this.border + this.tileShift
-        ) {
-          const xPos =
-            this.columnCount -
-            Math.floor((x - this.border) / this.tileSize) -
-            1;
-          const yPos =
-            this.rowCount -
-            Math.floor((y - this.border - this.tileShift) / this.tileSize) -
-            1;
-
-          const tiles = this.tiles.findTiles(xPos, yPos);
-
-          if (tiles) {
-            this.tiles.forDelete = [...tiles.coords];
-            this.tiles.forAnimate = [...tiles.findedTiles];
-
-            this.tiles.animationTimeEnd =
-              Date.now() + this.tiles.deleteAnimationDuration;
-
-            this.tiles.delete();
-            this.tiles.animateDelete();
-
-            this.updateGameMoves();
-            this.updateScore(tiles.findedTiles.length);
-
-            if (this.scoreCount >= this.scoreForWin) {
-              this.tiles.isAnimation = true;
-
-              setTimeout(() => {
-                this.endGame.draw(END_GAME_MAP.win);
-              }, this.tiles.deleteAnimationDuration);
-            }
-
-            if (this.gameMovesCount === 0) {
-              this.tiles.isAnimation = true;
-
-              setTimeout(() => {
-                this.endGame.draw(END_GAME_MAP.lost);
-              }, this.tiles.deleteAnimationDuration);
-            }
-          }
-        }
+        this.gameProgress(event);
       }
     });
 
@@ -144,6 +96,56 @@ class Game {
     requestAnimationFrame((time) => this.render(time));
     this.clearCanvas();
     this.draw();
+  }
+
+  gameProgress(event) {
+    const { x, y } = getCursorPosition(this.canvas, event);
+
+    if (
+      x > this.border &&
+      x < this.canvas.width - this.border &&
+      y > this.border + this.tileShift &&
+      y < this.canvas.height - this.border + this.tileShift
+    ) {
+      const xPos =
+        this.columnCount - Math.floor((x - this.border) / this.tileSize) - 1;
+      const yPos =
+        this.rowCount -
+        Math.floor((y - this.border - this.tileShift) / this.tileSize) -
+        1;
+
+      const tiles = this.tiles.findTiles(xPos, yPos);
+
+      if (tiles) {
+        this.tiles.forDelete = [...tiles.coords];
+        this.tiles.forAnimate = [...tiles.findedTiles];
+
+        this.tiles.animationTimeEnd =
+          Date.now() + this.tiles.deleteAnimationDuration;
+
+        this.tiles.delete();
+        this.tiles.animateDelete();
+
+        this.updateGameMoves();
+        this.updateScore(tiles.findedTiles.length);
+
+        if (this.scoreCount >= this.scoreForWin) {
+          this.tiles.isAnimation = true;
+
+          setTimeout(() => {
+            this.endGame.draw(END_GAME_MAP.win);
+          }, this.tiles.deleteAnimationDuration);
+        }
+
+        if (this.gameMovesCount === 0) {
+          this.tiles.isAnimation = true;
+
+          setTimeout(() => {
+            this.endGame.draw(END_GAME_MAP.lost);
+          }, this.tiles.deleteAnimationDuration);
+        }
+      }
+    }
   }
 
   updateGameMoves() {
