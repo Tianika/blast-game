@@ -84,6 +84,10 @@ button {
   grid-area: score;
 }
 
+.gameProgress {
+  text-transform: uppercase;
+}
+
 .gameMovesCount {
   display: flex;
   justify-content: center;
@@ -110,6 +114,7 @@ button {
   font-size: 4vh;
   line-height: 5vh;
   padding: 10px;
+  text-transform: uppercase;
 }
 
 .canvas {
@@ -131,6 +136,7 @@ button {
   color: $font;
   font-size: 30px;
   text-align: center;
+  text-transform: uppercase;
   grid-area: progress;
 }
 
@@ -200,6 +206,7 @@ button {
 
 .bonusesTitle {
   text-align: center;
+  text-transform: uppercase;
   grid-area: title;
 }
 

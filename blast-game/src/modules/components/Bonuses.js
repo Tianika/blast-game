@@ -1,6 +1,7 @@
 import Game from './Game';
 import { BONUSES } from '../../utils/constants';
 import { createElementWithClass, loadImage } from '../../utils/helpers';
+import { STRING_MAP } from '../../utils/locales';
 
 class Bonuses extends Game {
   constructor(props) {
@@ -11,7 +12,7 @@ class Bonuses extends Game {
 
   async draw() {
     const title = createElementWithClass('h3', 'bonusesTitle');
-    title.innerText = 'БОНУСЫ';
+    title.innerText = STRING_MAP.bonuses;
 
     const bomb = createElementWithClass('button', 'bombButton');
     const imageBomb = await loadImage(BONUSES.bomb);
