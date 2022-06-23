@@ -231,6 +231,10 @@ button {
   &:active {
     transform: scale(1);
   }
+
+  &.active {
+    filter: drop-shadow(0 0 10px #0413e7);
+  }
 }
 
 .bombButton {

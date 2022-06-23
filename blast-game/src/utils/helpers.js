@@ -54,3 +54,27 @@ export function createElementWithClass(tagName, className) {
 
   return element;
 }
+
+export function toggleClassActive({ currentTarget }) {
+  if (currentTarget.classList.contains('active')) {
+    currentTarget.classList.remove('active');
+  } else {
+    currentTarget.classList.add('active');
+  }
+}
+
+export async function addBonusButton(
+  { btnClass, imgSrc, imgClass },
+  container
+) {
+  const button = createElementWithClass('button', btnClass);
+  const image = await loadImage(imgSrc);
+  image.classList.add(imgClass);
+
+  button.addEventListener('click', (event) => toggleClassActive(event));
+
+  button.appendChild(image);
+  container.appendChild(button);
+
+  return button;
+}
