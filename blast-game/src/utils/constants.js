@@ -6,11 +6,6 @@ export const BG_BORDER = 15;
 
 export const GAME_BG = '../assets/png/field.png';
 
-export const BONUSES = {
-  bomb: '../assets/png/bonuses/bomb.png',
-  teleport: '../assets/png/bonuses/teleport.png',
-};
-
 export const TILE_DATAS = [
   {
     name: 'yellow',

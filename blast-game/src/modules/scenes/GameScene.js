@@ -16,11 +16,6 @@ class GameScene extends Scene {
     const main = createElementWithClass('main', 'gameMain');
     this.scene.appendChild(main);
 
-    const game = new Game({
-      parentElement: main,
-    });
-    await game.startGame();
-
     const progress = new Progress({
       parentElement: main,
     });
@@ -30,6 +25,11 @@ class GameScene extends Scene {
       parentElement: main,
     });
     bonuses.draw();
+
+    const game = new Game({
+      parentElement: main,
+    });
+    await game.startGame();
   }
 }
 

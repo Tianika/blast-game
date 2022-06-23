@@ -63,13 +63,9 @@ export function toggleClassActive({ currentTarget }) {
   }
 }
 
-export async function addBonusButton(
-  { btnClass, imgSrc, imgClass },
-  container
-) {
-  const button = createElementWithClass('button', btnClass);
-  const image = await loadImage(imgSrc);
-  image.classList.add(imgClass);
+export function addBonusButton({ btnClass, imgClass }, container) {
+  const button = createElementWithClass('div', btnClass);
+  const image = createElementWithClass('div', imgClass);
 
   button.addEventListener('click', (event) => toggleClassActive(event));
 

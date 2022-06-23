@@ -32,7 +32,7 @@ button {
   font-size: 5vh;
   line-height: 7vh;
   border-radius: 15px;
-  padding: 10px;
+  padding: 30px;
   color: $font;
   background-repeat: no-repeat;
   background-color: transparent;
@@ -249,4 +249,15 @@ button {
 .imageTeleport {
   width: 70px;
   height: 70px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
+.imageBomb {
+  background-image: url('../assets/png/bonuses/bomb.png');
+}
+
+.imageTeleport {
+  background-image: url('../assets/png/bonuses/teleport.png');
 }
