@@ -13,10 +13,12 @@ export const loadImage = async (src) => {
   return image;
 };
 
-export const getTileArray = async () => {
+export const getTileArray = async (num) => {
   const tiles = [];
 
-  const arrPromise = TILE_DATAS.map(async ({ name, src }) => {
+  const colorsForGame = TILE_DATAS.sort(() => Math.random() - 0.5);
+
+  const arrPromise = colorsForGame.slice(0, num).map(async ({ name, src }) => {
     const image = await loadImage(src);
 
     return { name, image };

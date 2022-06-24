@@ -26,6 +26,7 @@ class Game {
     this.minTilesGroup = 2;
     this.scoreForWin = Math.max(this.columnCount, this.rowCount) * 10;
     this.bombRadius = 1;
+    this.numberOfColors = 5;
 
     this.tileSize = TILE_SIZE;
     this.tileShift = TILE_SHIFT;
@@ -61,7 +62,7 @@ class Game {
     this.parent.appendChild(this.canvas);
 
     this.bgImage = await loadImage(GAME_BG);
-    this.tilesSample = await getTileArray();
+    this.tilesSample = await getTileArray(this.numberOfColors);
 
     this.background = new Background({
       image: this.bgImage,
