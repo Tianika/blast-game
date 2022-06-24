@@ -16,7 +16,7 @@ class Tiles extends DisplayObject {
     this.context = props.context;
     this.minTilesGroup = props.minTilesGroup;
 
-    this.tiles = [];
+    this.allTiles = [];
     this.forAnimate = [];
     this.forDelete = [];
     this.forMove = [];
@@ -41,7 +41,7 @@ class Tiles extends DisplayObject {
         arr.push(this.createTile(i, j));
       }
 
-      this.tiles.push(arr);
+      this.allTiles.push(arr);
     }
     if (!this.checkPossibleMove()) {
       this.shuffleTiles();
@@ -66,8 +66,8 @@ class Tiles extends DisplayObject {
   draw() {
     for (let i = 0; i < this.columnCount; i++) {
       for (let j = 0; j < this.rowCount; j++) {
-        if (this.tiles[i][j]) {
-          const { image, x, y, width, height } = this.tiles[i][j];
+        if (this.allTiles[i][j]) {
+          const { image, x, y, width, height } = this.allTiles[i][j];
 
           new DisplayObject({ image, x, y, width, height }).draw(this.context);
         }
@@ -80,9 +80,9 @@ class Tiles extends DisplayObject {
     const coords = [];
     coords.push({ x, y, isChecked: false });
 
-    if (!this.tiles[x][y]) return;
+    if (!this.allTiles[x][y]) return;
 
-    const { name } = this.tiles[x][y];
+    const { name } = this.allTiles[x][y];
     let isAllFind = true;
 
     do {
@@ -93,8 +93,8 @@ class Tiles extends DisplayObject {
 
         if (x + 1 >= 0 && x + 1 < this.columnCount) {
           if (
-            this.tiles[x + 1][y] &&
-            this.tiles[x + 1][y].name === name &&
+            this.allTiles[x + 1][y] &&
+            this.allTiles[x + 1][y].name === name &&
             !checkCoords(coords, x + 1, y)
           ) {
             coords.push({ x: x + 1, y, isChecked: false });
@@ -104,8 +104,8 @@ class Tiles extends DisplayObject {
 
         if (x - 1 >= 0 && x - 1 < this.columnCount) {
           if (
-            this.tiles[x - 1][y] &&
-            this.tiles[x - 1][y].name === name &&
+            this.allTiles[x - 1][y] &&
+            this.allTiles[x - 1][y].name === name &&
             !checkCoords(coords, x - 1, y)
           ) {
             coords.push({ x: x - 1, y, isChecked: false });
@@ -114,7 +114,10 @@ class Tiles extends DisplayObject {
         }
 
         if (y + 1 >= 0 && y + 1 < this.rowCount) {
-          if (this.tiles[x][y + 1] && this.tiles[x][y + 1].name === name) {
+          if (
+            this.allTiles[x][y + 1] &&
+            this.allTiles[x][y + 1].name === name
+          ) {
             if (!checkCoords(coords, x, y + 1)) {
               coords.push({ x, y: y + 1, isChecked: false });
               isAllFind = true;
@@ -123,7 +126,10 @@ class Tiles extends DisplayObject {
         }
 
         if (y - 1 >= 0 && y - 1 < this.rowCount) {
-          if (this.tiles[x][y - 1] && this.tiles[x][y - 1].name === name) {
+          if (
+            this.allTiles[x][y - 1] &&
+            this.allTiles[x][y - 1].name === name
+          ) {
             if (!checkCoords(coords, x, y - 1)) {
               coords.push({ x, y: y - 1, isChecked: false });
               isAllFind = true;
@@ -136,7 +142,7 @@ class Tiles extends DisplayObject {
     } while (isAllFind);
 
     coords.forEach(({ x, y }) => {
-      findedTiles.push({ ...this.tiles[x][y] });
+      findedTiles.push({ ...this.allTiles[x][y] });
     });
 
     return findedTiles.length >= this.minTilesGroup
@@ -146,7 +152,7 @@ class Tiles extends DisplayObject {
 
   delete() {
     this.forDelete.forEach(({ x, y }) => {
-      this.tiles[x][y] = null;
+      this.allTiles[x][y] = null;
     });
 
     this.forDelete = [];
@@ -192,7 +198,7 @@ class Tiles extends DisplayObject {
       const arr = [];
 
       for (let j = 0; j < this.rowCount; j++) {
-        const tile = this.tiles[i][j];
+        const tile = this.allTiles[i][j];
 
         if (!tile) {
           time += 1;
@@ -234,7 +240,7 @@ class Tiles extends DisplayObject {
   animateMove() {
     if (this.forMove.length < 1) return;
 
-    this.tiles = [];
+    this.allTiles = [];
     for (let i = 0; i < this.columnCount; i++) {
       const arr = [];
 
@@ -259,7 +265,7 @@ class Tiles extends DisplayObject {
         arr.push(this.forMove[i][j].tile);
       }
 
-      this.tiles.push(arr);
+      this.allTiles.push(arr);
     }
 
     this.moveTime -= 1;
@@ -273,8 +279,8 @@ class Tiles extends DisplayObject {
   checkPossibleMove() {
     let isPossible = false;
 
-    for (let i = 0; i < this.tiles.length; i++) {
-      for (let j = 0; j < this.tiles[i].length; j++) {
+    for (let i = 0; i < this.allTiles.length; i++) {
+      for (let j = 0; j < this.allTiles[i].length; j++) {
         const tiles = this.findTiles(i, j);
 
         if (tiles) {
@@ -288,17 +294,17 @@ class Tiles extends DisplayObject {
   }
 
   shuffleTiles() {
-    this.tiles.sort(() => Math.random() - 0.5);
+    this.allTiles.sort(() => Math.random() - 0.5);
 
-    this.tiles.forEach((column) => {
+    this.allTiles.forEach((column) => {
       column.sort(() => Math.random() - 0.5);
     });
 
     for (let i = 0; i < this.columnCount; i++) {
       for (let j = 0; j < this.rowCount; j++) {
-        this.tiles[i][j].x =
+        this.allTiles[i][j].x =
           (this.columnCount - 1 - i) * this.tileSize + this.border;
-        this.tiles[i][j].y =
+        this.allTiles[i][j].y =
           (this.rowCount - 1 - j) * this.tileSize + this.border;
       }
     }

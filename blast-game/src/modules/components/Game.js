@@ -44,11 +44,11 @@ class Game {
     this.tilesSample = [];
     this.tiles = null;
 
-    this.bomb = document.querySelector('.bombButton');
-    this.teleport = document.querySelector('.teleportButton');
-
     this.isBombActive = false;
     this.isTeleportActive = false;
+
+    this.teleportFirstPos = null;
+    this.teleportSecondPos = null;
 
     this.endGame = new EndScene();
   }
@@ -159,8 +159,11 @@ class Game {
   }
 
   activateBonuses() {
-    this.bomb.addEventListener('click', () => {
-      if (this.bomb.classList.contains('active')) {
+    const bomb = document.querySelector('.bombButton');
+    const teleport = document.querySelector('.teleportButton');
+
+    bomb.addEventListener('click', () => {
+      if (bomb.classList.contains('active')) {
         this.isBombActive = true;
         this.isTeleportActive = false;
       } else {
@@ -168,8 +171,8 @@ class Game {
       }
     });
 
-    this.teleport.addEventListener('click', () => {
-      if (this.teleport.classList.contains('active')) {
+    teleport.addEventListener('click', () => {
+      if (teleport.classList.contains('active')) {
         this.isTeleportActive = true;
         this.isBombActive = false;
       } else {
@@ -179,6 +182,7 @@ class Game {
   }
 
   activateBomb(event) {
+    const bomb = document.querySelector('.bombButton');
     const { x, y } = getCursorPosition(this.canvas, event);
 
     if (
@@ -201,7 +205,7 @@ class Game {
       for (let i = columnStart; i <= columnEnd; i++) {
         for (let j = rowStart; j <= rowEnd; j++) {
           coords.push({ x: i, y: j });
-          tiles.push(this.tiles.tiles[i][j]);
+          tiles.push(this.tiles.allTiles[i][j]);
         }
       }
 
@@ -210,11 +214,12 @@ class Game {
 
       this.gameProgress(tiles.length);
       this.isBombActive = false;
-      this.bomb.classList.remove('active');
+      bomb.classList.remove('active');
     }
   }
 
   activateTeleport(event) {
+    const teleport = document.querySelector('.teleportButton');
     const { x, y } = getCursorPosition(this.canvas, event);
 
     if (
@@ -223,7 +228,56 @@ class Game {
       y > this.border + this.tileShift &&
       y < this.canvas.height - this.border + this.tileShift
     ) {
-      console.log('teleport');
+      const { xPos, yPos } = this.getTilePosition(x, y);
+
+      if (!this.teleportFirstPos) {
+        this.teleportFirstPos = { x: xPos, y: yPos };
+      } else if (!this.teleportSecondPos) {
+        if (
+          JSON.stringify(this.teleportFirstPos) !==
+          JSON.stringify({ x: xPos, y: yPos })
+        ) {
+          this.teleportSecondPos = { x: xPos, y: yPos };
+
+          const { x: x1, y: y1 } = this.teleportFirstPos;
+          const { x: x2, y: y2 } = this.teleportSecondPos;
+
+          this.tiles.forDelete = [
+            this.teleportFirstPos,
+            this.teleportSecondPos,
+          ];
+
+          const firstTile = { ...this.tiles.allTiles[x1][y1] };
+          const secondTile = { ...this.tiles.allTiles[x2][y2] };
+
+          this.tiles.delete();
+
+          this.tiles.allTiles[x1][y1] = {
+            name: secondTile.name,
+            image: secondTile.image,
+            x: firstTile.x,
+            y: firstTile.y,
+            width: firstTile.width,
+            height: firstTile.height,
+          };
+          this.tiles.allTiles[x2][y2] = {
+            name: firstTile.name,
+            image: firstTile.image,
+            x: secondTile.x,
+            y: secondTile.y,
+            width: secondTile.width,
+            height: secondTile.height,
+          };
+
+          this.isTeleportActive = false;
+          this.teleportFirstPos = false;
+          this.teleportSecondPos = false;
+          teleport.classList.remove('active');
+
+          this.updateGameMoves();
+          this.checkEndGame();
+        }
+      }
     }
   }
 
