@@ -1,4 +1,5 @@
 import { createElementWithClass } from '../../utils/helpers';
+import { BUTTONS_TEXT, END_GAME_MESSAGES } from '../../utils/locales';
 import GameScene from './GameScene';
 import Scene from './Scene';
 
@@ -7,8 +8,8 @@ class EndScene extends Scene {
     super(props);
 
     this.messages = {
-      win: `Поздравляем! <div>Вы выиграли!!!</div>`,
-      lost: `Вы проиграли. <div>Попробуйте снова</div>`,
+      win: END_GAME_MESSAGES.win,
+      lost: END_GAME_MESSAGES.lost,
     };
   }
 
@@ -19,7 +20,7 @@ class EndScene extends Scene {
     resultMessage.innerHTML = this.messages[message];
 
     const button = createElementWithClass('button', 'startAgainBtn');
-    button.innerHTML = 'Начать сначала';
+    button.innerHTML = BUTTONS_TEXT.endGame;
 
     button.addEventListener('click', async () => {
       const gameScene = new GameScene();

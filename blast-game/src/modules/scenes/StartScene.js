@@ -1,4 +1,5 @@
 import { createElementWithClass } from '../../utils/helpers';
+import { BUTTONS_TEXT } from '../../utils/locales';
 import GameScene from './GameScene';
 import Scene from './Scene';
 
@@ -11,7 +12,7 @@ class StartScene extends Scene {
     super.draw();
 
     const button = createElementWithClass('button', 'startGameBtn');
-    button.innerHTML = 'Начать игру';
+    button.innerHTML = BUTTONS_TEXT.startGame;
 
     button.addEventListener('click', async () => {
       const gameScene = new GameScene();
